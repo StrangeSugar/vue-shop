@@ -22,7 +22,8 @@
         <span>
           <i class='iconfont iconaccount'></i>
         </span>
-        <span>个人</span>
+      
+      <span>个人</span>
       </span>
   </div>
 </template>
@@ -32,7 +33,12 @@
     name:'FooterGuide',
     methods:{
       goto(path){
-        this.$router.replace(path)
+        if(path!==this.$route.path){
+            this.$router.replace(path)  
+        }else{
+          window.history.go()
+        }
+        
 
       }
     }
@@ -42,6 +48,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .footer-guide
+  background-color #ffffff
   top-border-1px(#cccccc) 
   display flex
   position fixed
