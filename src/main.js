@@ -1,13 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+
 import 'lib-flexible'
 import router from './router'
 import Header from './components/Header/Header.vue'
 import store from '@/store'
+import Star from '@/components/Star/Star.vue'
+import './utils/validate'
 
 
-
+Vue.component('Star',Star)
 Vue.component('Header',Header)
 new Vue({
     // components:{
