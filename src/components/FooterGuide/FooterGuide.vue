@@ -48,6 +48,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixins.styl'
 .footer-guide
+  
   background-color #ffffff
   top-border-1px(#cccccc) 
   display flex

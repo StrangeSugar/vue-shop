@@ -46,14 +46,14 @@
               <section class="login_verification">
                 <ValidationProvider
                   mode="eager"
-                  rules="requiredCode"
+                  rules="requiredCode1"
                   v-slot="{ errors }"
                 >
                   <input
                     type="tel"
                     maxlength="8"
                     placeholder="验证码"
-                    v-model="Vee_code"
+                    v-model="Vee_code1"
                   />
                   <span>{{ errors[0] }}</span>
                 </ValidationProvider>
@@ -114,7 +114,7 @@
                 <section class="login_message">
                   <ValidationProvider
                     mode="eager"
-                    rules="requiredCode"
+                    rules="requiredCode2"
                     v-slot="{ errors }"
                   >
                     <input
@@ -127,8 +127,10 @@
                   </ValidationProvider>
                   <img
                     class="get_verification"
-                    src="./images/captcha.svg"
+                    src="http://localhost:5000/captcha"
                     alt="captcha"
+                    @click="updateCaptcha"
+                    ref="captcha"
                   />
                 </section>
               </section>
@@ -147,6 +149,8 @@
 </template>
 
 <script type="text/ecmascript-6">
+import {reqSendCode,reqLogin_sms,reqLogin_pwd} from '../../api'
+import { Toast } from 'mint-ui';
 export default {
   data() {
     return {
@@ -154,12 +158,14 @@ export default {
       isShowMes: true,
       disabled: true,
       phoneNum: "",
-      Vee_code: "",
       password: "",
       phoneNum_email_username: "",
-      Vee_code2: "",
+      Vee_code1: "",//验证码短信
+      Vee_code2: "",//验证码密码
       isSend:false,
-      time:10 //倒计时
+      time:10, //倒计时,
+      timeArr:[],
+      
     };
   },
 
@@ -167,27 +173,45 @@ export default {
     changeLogin() {
       this.isShowMes = !this.isShowMes;
     },
-    onSubmit() {
+     onSubmit() {
+       
       if (this.isShowMes) {
-        this.$refs.form1.validate().then((success) => {
+        this.$refs.form1.validate().then(async (success) => {
           if (!success) {
             return;
           }
-
-          alert("Form1");
+          
+          const result = await reqLogin_sms(this.phoneNum,this.Vee_code1)
+          const {code,data,msg} = result
+          if(code===0){
+            Toast(data._id)
+            Toast(data.phone)
+            Toast("登录成功")
+          }else{
+            Toast(msg)
+          }
         });
       }else{
-        this.$refs.form1.validate().then((success) => {
+        this.$refs.form2.validate().then( async (success) => {
           if (!success) {
             return;
           }
+          const result = await reqLogin_pwd(this.phoneNum,this.password,this.Vee_code2)
+          const {code,data,msg} = result
+          if(code===0){
+            Toast(data._id)
+            Toast(data.phone)
+            Toast("登录成功")
+          }else{
+            Toast(msg)
+          }
 
-          alert("Form2");
+         
         });
 
       }
     },
-    senCode(){
+    async senCode(){
       if(!this.isSend){
         this.isSend=true
         this.disabled=true
@@ -200,9 +224,40 @@ export default {
             this.time=10
           }
         },1000)
+        const result = await reqSendCode(this.phoneNum)
+        const {code,msg} = result
+        if(code===0){
+          console.log('验证码发送成功')
+          Toast("验证码发送成功")
+        }else{
+           Toast(msg)
+        }
+
 
       }
 
+    },
+    updateCaptcha(){
+      let now = Date.now()
+      console.log(now)
+      this.timeArr.push(now)
+      if(this.timeArr.length>=3){
+        if(now-this.timeArr[0]>=3000){
+           this.$refs.captcha.src = "http://localhost:5000/captcha?time"+now
+           
+             this.timeArr.splice(0,1)
+           
+
+        }else{
+           Toast('请勿频繁获取验证码')
+        } 
+           
+      }else{
+        this.$refs.captcha.src = "http://localhost:5000/captcha?time"+now
+      }
+      
+     
+      
     }
   },
   watch: {

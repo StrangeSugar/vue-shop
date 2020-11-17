@@ -105,7 +105,7 @@
 @import '../../common/stylus/mixins.styl'
    
   .profile //我的
-    
+    overflow hidden
     width 100%
     .profile-number
       margin-top 45.5px
