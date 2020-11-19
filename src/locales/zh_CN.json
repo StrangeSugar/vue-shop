@@ -1,0 +1,14 @@
+{
+  "messageLogin": "短信登录",
+  "passwordLogin":"密码登录",
+  "login":"登录",
+  "logout":"退出登录",
+  "abort":"关于我们",
+  "phoneNum":"手机号",
+  "validationCode":"验证码",
+  "username":"手机/邮箱/用户名",
+  "password":"密码",
+  "switchLanguage":"切换语言"
+
+
+}

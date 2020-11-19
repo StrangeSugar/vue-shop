@@ -4,5 +4,7 @@ export default {
     longitede:116.36867,
     address:{},
     categorys:[],
-    shops:[]
+    shops:[],
+    user:{},
+    token:localStorage.getItem('token_key')||''
 }

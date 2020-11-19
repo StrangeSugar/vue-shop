@@ -5,13 +5,13 @@
         <h2 class="login_logo">硅谷外卖</h2>
         <div class="login_header_title">
           <a href="javascript:;" :class="{ on: isShowMes }" @click="changeLogin"
-            >短信登录</a
+            >{{ $t('messageLogin')}}</a
           >
           <a
             href="javascript:;"
             :class="{ on: !isShowMes }"
             @click="changeLogin"
-            >密码登录</a
+            >{{ $t('passwordLogin')}}</a
           >
         </div>
       </div>
@@ -29,7 +29,7 @@
                   <input
                     type="tel"
                     maxlength="11"
-                    placeholder="手机号"
+                    :placeholder=" $t('phoneNum')"
                     v-model="phoneNum"
                   />
                   <span>{{ errors[0] }}</span>
@@ -52,7 +52,7 @@
                   <input
                     type="tel"
                     maxlength="8"
-                    placeholder="验证码"
+                    :placeholder=" $t('validationCode')"
                     v-model="Vee_code1"
                   />
                   <span>{{ errors[0] }}</span>
@@ -76,7 +76,7 @@
                     <input
                       type="tel"
                       maxlength="11"
-                      placeholder="手机/邮箱/用户名"
+                      :placeholder="$t('username')"
                       v-model="phoneNum_email_username"
                     />
                     <span>{{ errors[0] }}</span>
@@ -92,7 +92,7 @@
                     <input
                       :type="isShowPwd ? 'text' : 'password'"
                       maxlength="8"
-                      placeholder="密码"
+                      :placeholder="$t('password')"
                       v-model="password"
                     />
                     <span>{{ errors[0] }}</span>
@@ -120,14 +120,14 @@
                     <input
                       type="text"
                       maxlength="11"
-                      placeholder="验证码"
+                      :placeholder="$t('validationCode')"
                       v-model="Vee_code2"
                     />
                     <span>{{ errors[0] }}</span>
                   </ValidationProvider>
                   <img
                     class="get_verification"
-                    src="http://localhost:5000/captcha"
+                    src="http://localhost:4000/captcha"
                     alt="captcha"
                     @click="updateCaptcha"
                     ref="captcha"
@@ -136,15 +136,16 @@
               </section>
             </ValidationObserver>
           </div>
-          <button class="login_submit" type="submit">登录</button>
+          <button class="login_submit" type="submit">{{$t('login')}}</button>
         </form>
 
-        <a href="javascript:;" class="about_us">关于我们</a>
+        <a href="javascript:;" class="about_us">{{$t('abort')}}</a>
       </div>
       <a href="javascript:" class="go_back">
         <i class="iconfont icon-jiantou2"></i>
       </a>
     </div>
+    <mt-button @click="swichLanguage" id="languageButton" :plain="true" style="border:0px"  size="small">{{$t('switchLanguage')}}</mt-button>
   </section>
 </template>
 
@@ -184,9 +185,11 @@ export default {
           const result = await reqLogin_sms(this.phoneNum,this.Vee_code1)
           const {code,data,msg} = result
           if(code===0){
-            Toast(data._id)
-            Toast(data.phone)
-            Toast("登录成功")
+            this.$router.replace('/profile')
+            this.$store.dispatch('saveUser',data)
+            console.log(data)
+            
+            
           }else{
             Toast(msg)
           }
@@ -196,14 +199,16 @@ export default {
           if (!success) {
             return;
           }
-          const result = await reqLogin_pwd(this.phoneNum,this.password,this.Vee_code2)
+          console.log(this.phoneNum_email_username)
+          const result = await reqLogin_pwd(this.phoneNum_email_username,this.password,this.Vee_code2)
           const {code,data,msg} = result
           if(code===0){
-            Toast(data._id)
-            Toast(data.phone)
-            Toast("登录成功")
+            console.log(data)
+            this.$router.replace('/profile')
+            this.$store.dispatch('saveUser',data)
           }else{
             Toast(msg)
+            this.$refs.captcha.src = "http://localhost:4000/captcha?time"+Date.now()
           }
 
          
@@ -243,7 +248,7 @@ export default {
       this.timeArr.push(now)
       if(this.timeArr.length>=3){
         if(now-this.timeArr[0]>=3000){
-           this.$refs.captcha.src = "http://localhost:5000/captcha?time"+now
+           this.$refs.captcha.src = "http://localhost:4000/captcha?time"+now
            
              this.timeArr.splice(0,1)
            
@@ -253,10 +258,15 @@ export default {
         } 
            
       }else{
-        this.$refs.captcha.src = "http://localhost:5000/captcha?time"+now
+        this.$refs.captcha.src = "http://localhost:4000/captcha?time"+now
       }
       
      
+      
+    },
+    swichLanguage(){
+      let a = this.$i18n.locale==='zh_CN'?'en':'zh_CN'
+      this.$i18n.locale = a
       
     }
   },
@@ -272,9 +282,16 @@ export default {
 @import '../../common/stylus/mixins.styl';
 
 .loginContainer {
+  
   width: 100%;
   height: 100%;
   background: #fff;
+  #languageButton{
+     display block
+     margin 0 auto
+    
+    
+  }
 
   .loginInner {
     padding-top: 60px;

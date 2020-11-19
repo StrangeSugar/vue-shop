@@ -13,6 +13,8 @@ import FooterGuide from '@/components/FooterGuide/FooterGuide.vue'
 
       
         this.$store.dispatch('getAddress')
+        
+        this.$store.dispatch('getAuto_login')
         // navigator.geolocation.getCurrentPosition((postion)=>{
         //   console.log(postion)
           

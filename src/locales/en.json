@@ -1,0 +1,12 @@
+{
+  "messageLogin": "messageLogin",
+  "passwordLogin":"passwordLogin",
+  "login":"login",
+  "logout":"logout",
+  "abort":"abort",
+  "phoneNum":"phoneNum",
+  "validationCode":"validationCode",
+  "username":"username/e-mail/phone",
+  "password":"password",
+  "switchLanguage":"switchLanguage"
+}
